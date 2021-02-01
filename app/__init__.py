@@ -5,8 +5,8 @@ from flask import Flask, render_template
 from flask_login import LoginManager
 
 login_manager = LoginManager()
-login_manager.login_view = "app.login"
-
+login_manager.login_view = "auth.login"
+login_manager.login_message = "ログイン後に再度実行してください"
 
 def create_app(test_config=None):
     # create and configure the app
@@ -42,7 +42,8 @@ def create_app(test_config=None):
     @app.before_first_request
     def create_table():
         db.app_db.create_all()
-
+        db.set_seed_emotion()
+        
     # Blueprint初期化
     from . import views
     views.init_app(app)

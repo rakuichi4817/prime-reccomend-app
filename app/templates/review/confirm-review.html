@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="row justify-content-center">
+            <div class="col-xl-8">
+                <h1>確認</h1>
+                <hr>
+                <div class="row">
+
+                    <table class="table">
+                        <thead>
+                            <tr class="d-flex">
+                                <th class="col-3" scope="col">項目</th>
+                                <th class="col-9" scope="col">入力内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="d-flex">
+                                <th class="col-3" scope="row">レビュータイトル</th>
+                                <td class="col-9">{{ post_data["review_title"] }}</td>
+                            </tr>
+                            <tr class="d-flex">
+                                <th class="col-3" scope="row">ビデオタイトル</th>
+                                <td class="col-9">{{ post_data["video_title"] }}</td>
+                            </tr>
+                            <tr class="d-flex">
+                                <th class="col-3" scope="row">ビデオリンク</th>
+                                <td class="col-9">{{ post_data["url"] }}</td>
+                            </tr>
+                            <tr class="d-flex">
+                                <th class="col-3" scope="row">オススメ度</th>
+                                <td class="col-9">{{ post_data["star"] }}</td>
+                            </tr>
+                            <tr class="d-flex">
+                                <th class="col-3" scope="row">どんな方におすすめ？</th>
+                                {% if post_data["target_person"] %}
+                                <td class="col-9">{{ post_data["target_person"] }}</td>
+                                {% else %}
+                                <td class="col-9 text-secondary">入力なし</td>
+                                {% endif %}
+                            </tr>
+                            <tr class="d-flex">
+                                <th class="col-3" scope="row">映画を見た感情を選ぶなら？</th>
+                                {% if post_data["emotion_id1"] is not none %}
+                                <td class="col-3"><img
+                                        src="{{ url_for('static', filename='img/')}}{{emotions[post_data['emotion_id1']].file_name}} ">
+                                </td>
+                                {% else %}
+                                <td class="col-3 text-secondary">入力なし</td>
+                                {% endif %}
+                                {% if post_data["emotion_id2"] is not none %}
+                                <td class="col-3"><img
+                                        src="{{ url_for('static', filename='img/')}}{{emotions[post_data['emotion_id2']].file_name}} ">
+                                </td>
+                                {% else %}
+                                <td class="col-3"></td>
+                                {% endif %}
+                                {% if post_data["emotion_id3"] is not none %}
+                                <td class="col-3"><img
+                                        src="{{ url_for('static', filename='img/')}}{{emotions[post_data['emotion_id3']].file_name}} ">
+                                </td>
+                                {% else %}
+                                <td class="col-3"></td>
+                                {% endif %}
+                            </tr>
+
+                            <tr class="d-flex">
+                                <th class="col-3" scope="row">レビューコメント</th>
+                                {% if post_data["review_comment"] %}
+                                <td class="col-9">{{ post_data["review_comment"] }}</td>
+                                {% else %}
+                                <td class="col-9 text-secondary">入力なし</td>
+                                {% endif %}
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+                <form method="post">
+                    {%- for name, value in post_data.items() %}
+                    {%- if value is not none%}
+                    <input type="hidden" name="{{name}}" value="{{value}}">
+                    {%- else %}
+                    <input type="hidden" name="{{name}}">
+                    {%- endif %}
+                    {%- endfor %}
+
+                    <div class="row">
+                        <div class="col-6 d-grid gap-2">
+                            <button type="submit" name="submit" value="fix"
+                                class="btn btn-secondary btn-lg btn-lg-more">修正</button>
+                        </div>
+                        <div class="col-6 d-grid gap-2">
+                            <button type="submit" name="submit" value="ok"
+                                class="btn btn-primary btn-lg btn-lg-more">投稿</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

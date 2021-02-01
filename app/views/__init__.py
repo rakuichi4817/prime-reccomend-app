@@ -1,7 +1,7 @@
 from importlib import import_module
 
 # Brueprintで登録するモジュール
-modules = ["auth", "general"]
+modules = ["auth", "general", "review"]
 
 
 def init_app(app):

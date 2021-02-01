@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
 
+from app.db import app_db
+from app.models import ReviewTable
+
 app = Blueprint("general", __name__)
 
 
@@ -11,4 +14,6 @@ def index():
     Returns:
         index.htmlへのrender
     """
-    return render_template("index.html", title="TOP", name="vissel")
+    #all_rev_records = ReviewTable.query.all()
+    
+    return render_template("index.html", title="TOP")

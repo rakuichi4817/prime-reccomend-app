@@ -5,15 +5,12 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm-10" style="background-color: aqua;">
-            <h1>{{name}}</h1>
-            {% if id %}
-            <h1>{{id}}:{{password}}</h1>
-            {% endif %}
-
+        <div class="col-md-10" style="background-color: rgb(217, 245, 245);">
+            <div class="d-grid gap-2 d-block">
+                <a class="btn btn-secondary" href="{{ url_for('review.post_review') }}">新規投稿</a>
+            </div>
         </div>
-        
-        <div class="col-sm-2" style="background-color: rgb(244, 255, 205);">
+        <div class="col-md-2" style="background-color: rgb(244, 255, 205);">
             <h2>サブタイトル</h2>
 
 
