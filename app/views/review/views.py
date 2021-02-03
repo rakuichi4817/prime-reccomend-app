@@ -5,9 +5,8 @@ from flask import Blueprint, render_template, url_for, request, redirect, sessio
 from flask_login import login_required, current_user
 
 from app.db import app_db
-from app.common_function import set_token, check_token
 from app.models import ReviewTable, EmotionTable
-from app.libs import nldpp
+from app.libs import nldpp, reqmod
 
 app = Blueprint("review", __name__, url_prefix="/review")
 
@@ -38,7 +37,7 @@ def post_review():
             post_data = _get_post_review(request, page="confirm")
 
             # トークンチェック
-            if check_token(token_name, post_data):
+            if reqmod.check_token(token_name, post_data):
                 print("aaa")
                 post_data["user_id"] = current_user.id
                 add_review = ReviewTable(**post_data)
@@ -47,7 +46,7 @@ def post_review():
                 return redirect("/")
             else:
                 # 失敗時はメッセージとともに新規投稿画面へ
-                post_token = set_token(token_name)
+                post_token = reqmod.set_token(token_name)
                 flash("問題が発生したので初めから登録して下さい。")
                 return render_template("review/post-review.html", title="Post Review",
                                        emotions=emotions, post_token=post_token)
@@ -57,7 +56,7 @@ def post_review():
             return render_template("review/confirm-review.html", title="Confirm Post Review",
                                    post_data=post_data, emotions=emotions)
 
-    post_token = set_token(token_name)
+    post_token = reqmod.set_token(token_name)
     return render_template("review/post-review.html", title="Post Review",
                            emotions=emotions, post_token=post_token)
 

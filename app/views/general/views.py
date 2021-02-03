@@ -14,6 +14,6 @@ def index():
     Returns:
         index.htmlへのrender
     """
-    #all_rev_records = ReviewTable.query.all()
-    
-    return render_template("index.html", title="TOP")
+    # レビュー一覧の取得
+    all_reviews = ReviewTable.query.limit(10)
+    return render_template("index.html", title="TOP", all_reviews=all_reviews)

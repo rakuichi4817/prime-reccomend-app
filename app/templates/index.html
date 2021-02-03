@@ -3,17 +3,34 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-10" style="background-color: rgb(217, 245, 245);">
-            <div class="d-grid gap-2 d-block">
-                <a class="btn btn-secondary" href="{{ url_for('review.post_review') }}">新規投稿</a>
+<div class="home-container container">
+    <div class="container-fluid">
+        <h1>Prime Recommend App</h1>
+        <p>あなたのおすすめPrimeVideo作品を共有しよう！</p>
+    </div>
+    <div class="container-fluid pt-1">
+        <div class="row">
+            <div class="col-md-2">
+                <h2>サブタイトル</h2>
             </div>
-        </div>
-        <div class="col-md-2" style="background-color: rgb(244, 255, 205);">
-            <h2>サブタイトル</h2>
-
-
+            <div class="col-md-10 bg-white">
+                <div class="d-grid gap-2 d-block">
+                      {%if all_reviews is not none%}
+                    {% for review in all_reviews %}
+                    <div class="card">
+                        <h5 class="card-header">{{review.review_title}}</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">{{review.video_title}}</h5>
+                            <p class="card-text">{{review.target_person}}</p>
+                            <a href="#" class="btn btn-info">レビュー詳細</a>
+                            <a href="{{review.url}}" class="btn btn-primary" target="_blank"
+                                rel="noopener noreferrer">PrimeVideoへ</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {%endif%}
+                </div>
+            </div>
         </div>
     </div>
 </div>

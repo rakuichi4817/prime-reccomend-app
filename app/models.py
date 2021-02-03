@@ -84,7 +84,7 @@ class ReviewTable(app_db.Model):
         self.review_comment = kwargs.get("review_comment")
 
     def __repr__(self):
-        return f"<ReviewTable {self.rev_id}>"
+        return f"<ReviewTable {self.review_id}>"
 
 
 class EmotionTable(app_db.Model):
