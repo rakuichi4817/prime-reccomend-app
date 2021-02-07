@@ -7,133 +7,130 @@
 
 {% block content %}
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h1>新規投稿</h1>
-            <hr>
-            {% for message in get_flashed_messages() %}
-            <div class="flash">{{ message }}</div>
-            {% endfor %}
-            <form method="post">
-                {%- if post_token is defined %}
-                <input type="hidden" name="post_token" value="{{post_token}}">
-                {% endif %}
-                {%- if post_data is defined %}
-                <input type="hidden" name="post_token" value="{{post_data['post_token']}}">
-                {% endif %}
-                <div class="form-group">
-                    <label for="inputReviewTitle" class="form-question required">レビュータイトルの入力</label>
-                    <input type="text" name="review_title" class="form-control" id="inputReviewTitle"
-                        placeholder="レビュータイトル" required maxlength="35" {%- if post_data is defined
-                        %}value="{{ post_data['review_title']}}" {%endif%}>
-                </div>
-                <div class="form-group">
-                    <label for="inputVideoTitle" class="form-question required">作品のタイトルの入力</label>
-                    <input type="text" name="video_title" class="form-control" id="inputVideoTitle"
-                        placeholder="作品のタイトル" required maxlength="100" {%- if post_data is defined
-                        %}value="{{ post_data['review_title']}}" {%endif%}>
-                </div>
-
-                <div class="form-group">
-                    <label for="inputUrl" class="form-question required">PrimeVideoのリンク</label>
-                    <textarea id="inputUrl" name="url" rows="2" class="form-control" required
-                        maxlength="1000">{%- if post_data is defined %}{{ post_data['url']}}{% endif %}</textarea>
-                </div>
-
-                <div class="row g-2">
-                    <div class="col-md-6">
-                        <label for="inputStar" class="form-question required">オススメ度</label>
-                        <select class="form-select" aria-label="inputStar" id="inputStar" name="star" required>
-                            {%- if post_data is defined %}
-                            {%- if post_data["star"]==1 %}
-                            <option value="1" selected>
-                                {%-else%}
-                            <option value="1">
-                                {%endif%}
-                                ★☆☆☆☆（おすすめできない）</option>
-                            {%- if post_data["star"]==2 %}
-                            <option value="2" selected>
-                                {%-else%}
-                            <option value="2">
-                                {%endif%}
-                                ★★☆☆☆（どちらかといえばおすすめできない）</option>
-                            {%- if post_data["star"]==3 %}
-                            <option value="3" selected>
-                                {%-else%}
-                            <option value="3">
-                                {%endif%}
-                                ★★★☆☆（どちらかといえばおすすめ）</option>
-                            {%- if post_data["star"]==4 %}
-                            <option value="4" selected>
-                                {%-else%}
-                            <option value="4">
-                                {%endif%}
-                                ★★★★☆（おすすめ）</option>
-                            {%- if post_data["star"]==5 %}
-                            <option value="5" selected>
-                                {%-else%}
-                            <option value="5">
-                                {%endif%}
-                                ★★★★★（絶対見てほしい）</option>
-                            {% else %}
-                            <option value="1">★☆☆☆☆（おすすめできない）</option>
-                            <option value="2">★★☆☆☆（どちらかといえばおすすめできない）</option>
-                            <option value="3" selected>★★★☆☆（どちらかといえばおすすめ）</option>
-                            <option value="4">★★★★☆（おすすめ）</option>
-                            <option value="5">★★★★★（絶対見てほしい）</option>
-
-                            {% endif %}
-
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="inputTargetPerson" class="form-question">どんな方におすすめ？</label>
-                        <input type="text" name="target_person" class="form-control" id="inputTargetPerson"
-                            placeholder="例）〇〇好きな方へ！" maxlength="255" {%- if post_data is defined
-                            %}value="{{ post_data['target_person']}}" {%endif%}>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-question">映画を見た感情を選ぶなら？（最大3つ）</div>
-                    <div class="img-selection-group form-control">
-                        <div class="row g-md-4 ">
-                            {% for emotion in emotions %}
-                            <div class="col-4 col-md-3">
-                                {%- if post_data is defined %}
-                                {%- if emotion.id in [post_data["emotion_id1"]|int,
-                                post_data["emotion_id2"]|int,post_data["emotion_id3"]|int] %}
-                                <input class="form-check-input" type="checkbox" name="emotion"
-                                    id="emotion{{emotion.id}}" value="{{emotion.id}}" checked="checked">
-                                {%else%}
-                                <input class="form-check-input" type="checkbox" name="emotion"
-                                    id="emotion{{emotion.id}}" value="{{emotion.id}}">
-                                {%endif%}
-                                {% else %}
-                                <input class="form-check-input" type="checkbox" name="emotion"
-                                    id="emotion{{emotion.id}}" value="{{emotion.id}}">
-                                {% endif %}
-                                <label class="form-check-label" for="emotion{{emotion['id']}}"><img
-                                        src="{{ url_for('static', filename='img/')}}{{emotion.file_name}} "></label>
-                            </div>
-                            {% endfor %}
-
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-                    <label for="inputReviewComent" class="form-question">レビューコメントを追加</label>
-                    <textarea id="inputReviewComent" name="review_comment" rows="5" class="form-control"
-                        placeholder="感想やコメントを自由にお書きください。" maxlength="2500">
-                    {%- if post_data is defined%}{{ post_data['review_comment']}}{%endif%}</textarea>
-                </div>
-
-                <div class="d-grid gap-2 d-block">
-                    <button type="submit" class="btn btn-primary btn-lg btn-lg-more">投稿確認</button>
-                </div>
-            </form>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1>新規投稿</h1>
+      <hr>
+      {% for message in get_flashed_messages() %}
+      <div class="flash">{{ message }}</div>
+      {% endfor %}
+      <form method="post">
+        {%- if post_token is defined %}
+        <input type="hidden" name="post_token" value="{{post_token}}">
+        {% endif %}
+        {%- if post_data is defined %}
+        <input type="hidden" name="post_token" value="{{post_data['post_token']}}">
+        {% endif %}
+        <div class="form-group">
+          <label for="inputReviewTitle" class="form-question required">レビュータイトルの入力</label>
+          <input type="text" name="review_title" class="form-control" id="inputReviewTitle" placeholder="レビュータイトル"
+            required maxlength="35" {%- if post_data is defined %}value="{{ post_data['review_title']}}" {%endif%}>
         </div>
+        <div class="form-group">
+          <label for="inputVideoTitle" class="form-question required">作品のタイトルの入力</label>
+          <input type="text" name="video_title" class="form-control" id="inputVideoTitle" placeholder="作品のタイトル" required
+            maxlength="100" {%- if post_data is defined %}value="{{ post_data['review_title']}}" {%endif%}>
+        </div>
+
+        <div class="form-group">
+          <label for="inputUrl" class="form-question required">PrimeVideoのリンク</label>
+          <textarea id="inputUrl" name="url" rows="2" class="form-control" required
+            maxlength="1000">{%- if post_data is defined %}{{ post_data['url']}}{% endif %}</textarea>
+        </div>
+
+        <div class="row g-2">
+          <div class="col-md-6">
+            <label for="inputStar" class="form-question required">オススメ度</label>
+            <select class="form-select" aria-label="inputStar" id="inputStar" name="star" required>
+              {%- if post_data is defined %}
+              {%- if post_data["star"]==1 %}
+              <option value="1" selected>
+                {%-else%}
+              <option value="1">
+                {%endif%}
+                ★☆☆☆☆（おすすめできない）</option>
+              {%- if post_data["star"]==2 %}
+              <option value="2" selected>
+                {%-else%}
+              <option value="2">
+                {%endif%}
+                ★★☆☆☆（どちらかといえばおすすめできない）</option>
+              {%- if post_data["star"]==3 %}
+              <option value="3" selected>
+                {%-else%}
+              <option value="3">
+                {%endif%}
+                ★★★☆☆（どちらかといえばおすすめ）</option>
+              {%- if post_data["star"]==4 %}
+              <option value="4" selected>
+                {%-else%}
+              <option value="4">
+                {%endif%}
+                ★★★★☆（おすすめ）</option>
+              {%- if post_data["star"]==5 %}
+              <option value="5" selected>
+                {%-else%}
+              <option value="5">
+                {%endif%}
+                ★★★★★（絶対見てほしい）</option>
+              {% else %}
+              <option value="1">★☆☆☆☆（おすすめできない）</option>
+              <option value="2">★★☆☆☆（どちらかといえばおすすめできない）</option>
+              <option value="3" selected>★★★☆☆（どちらかといえばおすすめ）</option>
+              <option value="4">★★★★☆（おすすめ）</option>
+              <option value="5">★★★★★（絶対見てほしい）</option>
+
+              {% endif %}
+
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="inputTargetPerson" class="form-question">どんな方におすすめ？</label>
+            <input type="text" name="target_person" class="form-control" id="inputTargetPerson" placeholder="例）〇〇好きな方へ！"
+              maxlength="255" {%- if post_data is defined %}value="{{ post_data['target_person']}}" {%endif%}>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-question">映画を見た感情を選ぶなら？（最大3つ）</div>
+          <div class="img-selection-group form-control">
+            <div class="row g-md-4 ">
+              {% for emotion in emotions %}
+              <div class="col-4 col-md-3">
+                {%- if post_data is defined %}
+                {%- if emotion.id in [post_data["emotion_id1"]|int,
+                post_data["emotion_id2"]|int,post_data["emotion_id3"]|int] %}
+                <input class="form-check-input" type="checkbox" name="emotion" id="emotion{{emotion.id}}"
+                  value="{{emotion.id}}" checked="checked">
+                {%else%}
+                <input class="form-check-input" type="checkbox" name="emotion" id="emotion{{emotion.id}}"
+                  value="{{emotion.id}}">
+                {%endif%}
+                {% else %}
+                <input class="form-check-input" type="checkbox" name="emotion" id="emotion{{emotion.id}}"
+                  value="{{emotion.id}}">
+                {% endif %}
+                <label class="form-check-label" for="emotion{{emotion['id']}}"><img
+                    src="{{ url_for('static', filename='img/')}}{{emotion.file_name}} "></label>
+              </div>
+              {% endfor %}
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label for="inputReviewComent" class="form-question">レビューコメントを追加</label>
+          <textarea id="inputReviewComent" name="review_comment" rows="5" class="form-control"
+            placeholder="感想やコメントを自由にお書きください。" maxlength="2500">
+                    {%- if post_data is defined%}{{ post_data['review_comment']}}{%endif%}</textarea>
+        </div>
+
+        <div class="d-grid gap-2 d-block">
+          <button type="submit" class="btn btn-primary btn-lg btn-lg-more">投稿確認</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 {% endblock %}

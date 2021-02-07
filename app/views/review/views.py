@@ -1,11 +1,11 @@
 # pylint: disable=no-member
 import uuid
 
-from flask import Blueprint, render_template, url_for, request, redirect, session, flash
+from flask import Blueprint, render_template, url_for, request, redirect, session, flash, Markup
 from flask_login import login_required, current_user
 
 from app.db import app_db
-from app.models import ReviewTable, EmotionTable
+from app.models import ReviewTable, EmotionTable, UserTable
 from app.libs import nldpp, reqmod
 
 app = Blueprint("review", __name__, url_prefix="/review")
@@ -116,3 +116,21 @@ def _get_post_review(request, page="post"):
         post_data["emotion_id3"] = request.form.get("emotion_id3")
 
     return post_data
+
+
+# レビュー詳細ページ
+@app.route("/<review_id>", methods=("GET", "POST"))
+def review_detail(review_id):
+
+    review_id = int(review_id)
+    review = ReviewTable.query.filter_by(review_id=review_id).first()
+    post_user = UserTable.query.filter_by(id=review.user_id).first()
+    review.user_name = post_user.name
+    print(type(review.created_at.strftime("%Y-%m-%d")))
+    # 感情リストの取得
+    emotions = EmotionTable.query.all()
+
+    return render_template("review/detail.html", title=review.review_title, 
+                           review=review, emotions=emotions)
+
+
