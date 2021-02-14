@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="home-container container">
+  <div class="col-md-10 align-self-center container-fluid pt-2">
+    <div class="row justify-content-center bg-white">
+      <div class="col pt-2 pb-2">
+        <h1>投稿内容編集</h1>
+        <hr>
+        <form method="post">
+          <div class="form-group">
+            <label for="inputReviewTitle" class="form-question required">レビュータイトル</label>
+            <input type="text" name="review_title" class="form-control" id="inputReviewTitle" placeholder="レビュータイトル"
+              required maxlength="35" value="{{ review.review_title}}">
+          </div>
+          <div class="form-group">
+            <label for="inputVideoTitle" class="form-question required">作品のタイトル</label>
+            <input type="text" name="video_title" class="form-control" id="inputVideoTitle" placeholder="作品のタイトル"
+              required maxlength="100" value="{{ review.video_title}}">
+          </div>
+
+          <div class="form-group">
+            <label for="inputUrl" class="form-question required">PrimeVideoのリンク</label>
+            <textarea id="inputUrl" name="url" rows="2" class="form-control" required
+              maxlength="1000">{{ review.url }}</textarea>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label for="inputStar" class="form-question required">オススメ度</label>
+              <select class="form-select" aria-label="inputStar" id="inputStar" name="star" required>
+                {%- if review.star==1 %}
+                <option value="1" selected>
+                  {%-else%}
+                <option value="1">
+                  {%endif%}
+                  ★☆☆☆☆（おすすめできない）</option>
+                {%- if review.star==2 %}
+                <option value="2" selected>
+                  {%-else%}
+                <option value="2">
+                  {%endif%}
+                  ★★☆☆☆（どちらかといえばおすすめできない）</option>
+                {%- if review.star==3 %}
+                <option value="3" selected>
+                  {%-else%}
+                <option value="3">
+                  {%endif%}
+                  ★★★☆☆（どちらかといえばおすすめ）</option>
+                {%- if review.star==4 %}
+                <option value="4" selected>
+                  {%-else%}
+                <option value="4">
+                  {%endif%}
+                  ★★★★☆（おすすめ）</option>
+                {%- if review.star==5 %}
+                <option value="5" selected>
+                  {%-else%}
+                <option value="5">
+                  {%endif%}
+                  ★★★★★（絶対見てほしい）</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="inputTargetPerson" class="form-question">どんな方におすすめ？</label>
+              <input type="text" name="target_person" class="form-control" id="inputTargetPerson"
+                placeholder="例）〇〇好きな方へ！" maxlength="255" value="{{ review.target_person }}">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-question">映画を見た感情を選ぶなら？（最大3つ）</div>
+            <div class="img-selection-group form-control">
+              <div class="row g-md-4 ">
+                {% for emotion in emotions %}
+                <div class="col-4 col-md-3">
+                  {%- if emotion.id in [review.emotion_id1|int,
+                  review.emotion_id2|int, review.emotion_id3|int] %}
+                  <input class="form-check-input" type="checkbox" name="emotion" id="emotion{{emotion.id}}"
+                    value="{{emotion.id}}" checked="checked">
+                  {%else%}
+                  <input class="form-check-input" type="checkbox" name="emotion" id="emotion{{emotion.id}}"
+                    value="{{emotion.id}}">
+                  {%endif%}
+                  <label class="form-check-label" for="emotion{{emotion['id']}}"><img
+                      src="{{ url_for('static', filename='img/')}}{{emotion.file_name}} "></label>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputReviewComent" class="form-question">レビューコメント</label>
+            <textarea id="inputReviewComent" name="review_comment" rows="5" class="form-control"
+              placeholder="感想やコメントを自由にお書きください。" maxlength="2500">{{ review.review_comment}}</textarea>
+          </div>
+
+          <div class="d-grid gap-2 d-block">
+            <button type="submit" class="btn btn-primary btn-lg btn-lg-more">保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

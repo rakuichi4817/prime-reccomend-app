@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="home-container container">
-  <div class="col-11 align-self-center container-fluid pt-1">
+  <div class="col-12 align-self-center container-fluid pt-1">
     <div class="row">
       <div class="col-md-2">
         <h2>サブタイトル</h2>
@@ -12,12 +12,38 @@
       <div class="col-md-10 bg-white py-3 px-3">
         <div class="d-grid gap-2">
           <div class="row small">
-            <div class="col review-header mb-2">
+            <div class="col-7 review-header mb-2">
               <div class="user">
                 {{review.user_name}}<span class="text-secondary">さんの投稿</span>
               </div>
               <div class="time text-secondary">
                 {{review.created_at.strftime("%Y{}%m{}%d{}").format("年","月","日に投稿")}}</div>
+            </div>
+            <div class="col-5 text-end">
+              {%-if author_check=="author"%}
+              <a href="/review/edit/{{review.review_id}}" class="btn btn-secondary">編集</a>
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#deleteModal">削除</button>
+
+              <!-- Modal -->
+              <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel">本当に削除しますか？</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                      <form method="post">
+                        <button type="submit" name="submit" value="delete" class="btn btn-primary">削除する</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
             </div>
             <div class="col-12">
               <h1 class="content-title">{{review.review_title}}</h1>
@@ -26,14 +52,14 @@
               <span class="star5_rating text-bigger" data-rate="{{review.star}}">{{review.star}}</span>
             </div>
             <div class="col-md-9 mb-1">
-              {% if review.emotion_id1 is not none %}
-              <span class="badge bg-secondary text-1">{{emotions[review.emotion_id1].emotion}}</span>
+              {% if review["emotion_id1"] is not none %}
+              <span class="badge bg-primary text-1">{{emotions[review.emotion_id1].emotion}}</span>
               {% endif %}
-              {% if review.emotion_id2 is not none %}
-              <span class="badge bg-secondary text-1">{{emotions[review.emotion_id2].emotion}}</span>
+              {% if review["emotion_id2"] is not none %}
+              <span class="badge bg-primary text-1">{{emotions[review.emotion_id2].emotion}}</span>
               {% endif %}
-              {% if review.emotion_id3 is not none %}
-              <span class="badge bg-secondary text-1">{{emotions[review.emotion_id3].emotion}}</span>
+              {% if review["emotion_id3"] != "" %}
+              <span class="badge bg-primary text-1">{{emotions[review.emotion_id3].emotion}}</span>
               {% endif %}
 
             </div>
@@ -42,22 +68,9 @@
                 <a href="{{review.url}}" target="_blank" rel="noopener noreferrer">{{review.video_title}}</a>
               </h2>
             </div>
-
-
             <div class="p-3">
               <p>{{review.review_comment|cr}}</p>
             </div>
-
-
-            <!-- <div class="card">
-                        <h5 class="card-header">{{review.review_title}}</h5>
-                        <div class="card-body">
-                            <h5 class="card-title">{{review.video_title}}</h5>
-                            <p class="card-text">{{review.target_person}}</p>
-                            <a href="#" class="btn btn-info">レビュー詳細</a>
-                            <a href="{{review.url}}" class="btn btn-primary" target="_blank"
-                                rel="noopener noreferrer">PrimeVideoへ</a>
-                        </div> -->
           </div>
         </div>
       </div>

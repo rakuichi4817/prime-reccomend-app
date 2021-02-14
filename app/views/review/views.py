@@ -38,7 +38,6 @@ def post_review():
 
             # トークンチェック
             if reqmod.check_token(token_name, post_data):
-                print("aaa")
                 post_data["user_id"] = current_user.id
                 add_review = ReviewTable(**post_data)
                 app_db.session.add(add_review)
@@ -121,16 +120,66 @@ def _get_post_review(request, page="post"):
 # レビュー詳細ページ
 @app.route("/<review_id>", methods=("GET", "POST"))
 def review_detail(review_id):
+    """レビュー詳細ページを表示するための関数
+
+    Args:
+        review_id (str): 表示するレビューのID
+    """
+    
 
     review_id = int(review_id)
     review = ReviewTable.query.filter_by(review_id=review_id).first()
     post_user = UserTable.query.filter_by(id=review.user_id).first()
     review.user_name = post_user.name
-    print(type(review.created_at.strftime("%Y-%m-%d")))
+    # 感情リストの取得
+    emotions = EmotionTable.query.all()
+    
+    # 投稿者が開いているか確認
+    author_check = "not_author"
+    if current_user.is_authenticated:
+        if review.user_id == current_user.id:
+            author_check = "author"
+    
+    # 削除処理が走った場合
+    if request.method == "POST":
+        if request.form.get("submit") == "delete":
+            app_db.session.delete(review)
+            app_db.session.commit()
+            return redirect("/")
+
+    return render_template("review/detail.html", title=review.review_title,
+                           review=review, emotions=emotions, author_check=author_check)
+
+
+# レビュ－編集ページ
+@app.route("/edit/<review_id>", methods=("GET", "POST"))
+@login_required
+def edit_review(review_id):
+    # レビューIDからレビュー情報の取得
+    review_id = int(review_id)
+    review = ReviewTable.query.filter_by(review_id=review_id).first()
     # 感情リストの取得
     emotions = EmotionTable.query.all()
 
-    return render_template("review/detail.html", title=review.review_title, 
-                           review=review, emotions=emotions)
+    # アクセスしているユーザーと投稿者が一致するかの確認
+    if review.user_id == current_user.id:
+        if request.method == "POST":
+            # 編集結果を反映する
+            post_data = _get_post_review(request)
+            new_review = _update_review(review, post_data)
+            app_db.session.add(new_review)
+            app_db.session.commit()
+            return redirect(f"/review/{new_review.review_id}")
+        else:
+            # 編集画面に飛ばす
+            return render_template("review/edit-review.html",  title=review.review_title,
+                                   review=review, emotions=emotions)
+    else:
+        # 一致していない場合はトップページにリダイレクト
+        return redirect("/")
 
-
+def _update_review(org_review, post_data):
+    for key, value in post_data.items():
+        setattr(org_review, key, value)    
+    return org_review
+    
