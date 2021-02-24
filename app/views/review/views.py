@@ -1,7 +1,8 @@
 # pylint: disable=no-member
+import os
 import uuid
 
-from flask import Blueprint, render_template, url_for, request, redirect, session, flash, Markup
+from flask import Blueprint, render_template, url_for, request, redirect, session, flash, Markup, current_app
 from flask_login import login_required, current_user
 
 from app.db import app_db
@@ -42,6 +43,10 @@ def post_review():
                 add_review = ReviewTable(**post_data)
                 app_db.session.add(add_review)
                 app_db.session.commit()
+                wordcloud_img_path = os.path.join(
+                    current_app.config["WORDCLOUD_DIR"], "{}.png".format(add_review.review_id))
+                nldpp.get_wordcloud(
+                    add_review.review_comment, wordcloud_img_path)
                 return redirect("/")
             else:
                 # 失敗時はメッセージとともに新規投稿画面へ
@@ -169,6 +174,9 @@ def edit_review(review_id):
             new_review = _update_review(review, post_data)
             app_db.session.add(new_review)
             app_db.session.commit()
+            wordcloud_img_path = os.path.join(
+                current_app.config["WORDCLOUD_DIR"], "{}.png".format(new_review.review_id))
+            nldpp.get_wordcloud(new_review.review_comment, wordcloud_img_path)
             return redirect(f"/review/{new_review.review_id}")
         else:
             # 編集画面に飛ばす

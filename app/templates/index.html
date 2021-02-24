@@ -15,19 +15,33 @@
       </div>
       <div class="col-md-10 bg-white pt-3 pb-3">
         <div class="d-grid gap-2 d-block">
-          {%if all_reviews is not none%}
-          {% for review in all_reviews %}
-          <div class="card">
-            <h5 class="card-header">{{review.review_title}}</h5>
-            <div class="card-body">
-              <h5 class="card-title">{{review.video_title}}</h5>
-              <p class="card-text">{{review.target_person}}</p>
-              <a href="review/{{review.review_id}}" class="btn btn-info">レビュー詳細</a>
-              <a href="{{review.url}}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">PrimeVideoへ</a>
+          <div class="row">
+            {%if all_reviews is not none%}
+            {% for review in all_reviews %}
+            <div class="col-md-6 mb-3">
+
+              <div class="card">
+                <h5 class="card-header">{{review.review_title}}</h5>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <h5 class="card-title">{{review.video_title}}</h5>
+                      <p class="card-text">{{review.target_person}}</p>
+                    </div>
+                    <div class="col-12">
+                      <img src="static/files/wordcloud/{{review.review_id}}.png" class="card-img mb-2">
+                    </div>
+                  </div>
+                  <a href="review/{{review.review_id}}" class="btn btn-info">レビュー詳細</a>
+                  <a href="{{review.url}}" class="btn btn-primary" target="_blank"
+                    rel="noopener noreferrer">PrimeVideoへ</a>
+
+                </div>
+              </div>
             </div>
+            {% endfor %}
+            {%endif%}
           </div>
-          {% endfor %}
-          {%endif%}
         </div>
       </div>
     </div>

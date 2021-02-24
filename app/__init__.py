@@ -17,7 +17,9 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',
         SQLALCHEMY_DATABASE_URI=f"sqlite:///{sqlite_fpath}",
-        SQLALCHEMY_TRACK_MODIFICATIONS=False
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        GENERATE_DIR=os.path.join("app", "static", "files"),
+        WORDCLOUD_DIR=os.path.join("app", "static", "files", "wordcloud"),
     )
 
     if test_config is None:
@@ -28,11 +30,12 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
 
     # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
+    for make_dir_path in [app.instance_path, app.config["GENERATE_DIR"], app.config["WORDCLOUD_DIR"]]:
+        try:
+            os.makedirs(make_dir_path)
+        except OSError:
+            pass
+        
     # Login処理初期化
     login_manager.init_app(app)
 
